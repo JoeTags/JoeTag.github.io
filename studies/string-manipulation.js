@@ -13,7 +13,7 @@
     console.log(combinationPizzaHutTacoBell);
 /*
 *   2. With string methods: String methods are Javascripts unique ability to treat a primitive value as an object. It embues
-*                           a series of methods and properties that allow us to access and manipulate strings. For instance, m
+*                           a series of methods and properties that allow us to access and manipulate strings. For instance, 
 *                           many of the same methods that we use on arrays can be used on strings.
 *       examples: .length, index based data accessing, slice, splice, search are just a few
 */
