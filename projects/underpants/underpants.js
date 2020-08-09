@@ -371,28 +371,45 @@ _.pluck = function(array, property) {
 *   _.every([2,4,6], function(e){return e % 2 === 0}) -> true
 *   _.every([1,2,3], function(e){return e % 2 === 0}) -> false
 */
+
 _.every = function(collection, action) {
+   if (typeof action !== 'function') {
+       action = _.identity;
+   }
     if (Array.isArray(collection)) {
         for (let i = 0; i < collection.length; i++) {
-            if(!action(collection[i], i, collection) || typeof action !== 'function') {
-                
-               return false;
-            } 
-        }
-        return true;
-    } else if (typeof collection === 'object'){
-        for (let key in collection) {
-            if(!action(collection[key], key, collection) || typeof action !== 'function') {
-                
+            if(!action(collection[i], i, collection)) {
                 return false;
             }
-            
+        }
+     return true;
+        
+    } else if (typeof collection === 'object') {
+        for (let key in collection) {
+            if(!action(collection[key], key, collection)) {
+                
+                return false;
+            } 
         }
        return true;
     } 
-    
-    
-}
+} 
+/*
+_.every = function(collection, action = 0) {
+    if (action === 0) {
+        for (let i = 0; i < collection.length; i++) {
+            if(!collection[i]) {
+                return false;
+            }
+        }
+        return true;
+    } 
+    if (_.reject(collection, action).length > 0) {
+        return false;
+    }
+    return true;
+};*/
+
 
 /** _.some
 * Arguments:
@@ -415,7 +432,27 @@ _.every = function(collection, action) {
 *   _.some([1,2,3], function(e){return e % 2 === 0}) -> true
 */
 _.some = function(collection, action) {
-    
+    if (typeof action !== 'function') {
+       action = _.identity;
+   }
+    if (Array.isArray(collection)) {
+        for (let i = 0; i < collection.length; i++) {
+            if(action(collection[i], i, collection)) {
+                return true;
+            }
+        }
+     return false;
+        
+    } else if (typeof collection === 'object') {
+        for (let key in collection) {
+            if(action(collection[key], key, collection)) {
+                
+                return true;
+            } 
+            
+        }
+       return false;
+    } 
 }
 
 /** _.reduce
@@ -436,7 +473,22 @@ _.some = function(collection, action) {
 * Examples:
 *   _.reduce([1,2,3], function(previousSum, currentValue, currentIndex){ return previousSum + currentValue }, 0) -> 6
 */
-
+_.reduce = function(array, action, seed) {
+    var result;
+   if (seed === undefined) {
+       result = array[0];
+       _.each(array, function(element,index, collection) {
+           if (index > 0) {
+            result = action(result, element, index);}
+       });
+   } else {
+       result = seed;
+       _.each(array, function(element,index,collection) {
+           result = action(result,element,index);
+       })
+   }
+    return result;
+}
 
 /** _.extend
 * Arguments:
@@ -452,7 +504,9 @@ _.some = function(collection, action) {
 *   _.extend(data, {b:"two"}); -> data now equals {a:"one",b:"two"}
 *   _.extend(data, {a:"two"}); -> data now equals {a:"two"}
 */
-
+_.extend = function(...object) {
+    return Object.assign(...object);
+}
 //////////////////////////////////////////////////////////////////////
 // DON'T REMOVE THIS CODE ////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
