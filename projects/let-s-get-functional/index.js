@@ -26,6 +26,7 @@ var maleCount = function(array) {
         return customer.gender === "male";
     }).length
     }
+    
 
 //need to find the # of female customers(4).
 var femaleCount = function(array) {
@@ -40,81 +41,118 @@ var oldestCustomer = function(array) {
            if (customer.age > max.age) {
                return customer.name;
           }
+          
               return max;
       })
 };
  
 
 var youngestCustomer =  function(array) {
-    // compare the ages of the customers. customer.age > customer. 
-      return _.reduce(customers, function(min, customer) {
-            if (customer.age < min.age) {
-                min = customer.age;
-              return min;
-          }
-              return customer.name;
-      })
-      
-};;
+    // compare the ages of the customers. customer.age > customer.
+    let theYoungest = array[0]["age"];
+    let result;
+    _.each(array, function(e, i, a) {
+        if(array[i]["age"] < theYoungest) {
+            theYoungest = array[i]["age"];
+            result = array[i]["name"];
+        }
+    })
+   return result;
+};
+
 
 var averageBalance = function(array) {
     // use reduce on balance property
     return _.reduce(customers, function(total, customer) {
         // convert string value to number
-       let bankRoll = parseFloat(customer.balance);   //.replace(/[^\$\,]/, '.')); // stupid comma messing me up
-        return total + bankRoll;
-    }, 0) / customers.length;
+       let bankRoll = parseFloat(customer.balance.replace("$", "").replace(",", ""));   //.replace(/[^\$\,]/, '.')); // stupid comma messing me up
+     return total + bankRoll;
+    
+    }, 0)/ customers.length;
+    
+    // something over here is messing me up
 };
 
 
 // use .length/2 or customers array
 
 var firstLetterCount = function(array, letter) {
-    const regex2 = new RegExp(letter, "i");
+    
     return _.filter(customers, function(customer) {
         
-        return customer["name"][0] === letter;
+        if(customer["name"][0].toLowerCase() === letter.toLowerCase()) {
+            return customer["name"][0];
+        }
             
     }).length;
     
 };
 
 var friendFirstLetterCount = function(array, customer, letter) {
-    return _.filter(customers, function(customer) {
-        // return customer["friends"]["name"][0] === letter;
-       // return _.pluck(customer.friends, customer.friends.name); 
-          return customer["friends"]["name"][0] === letter;
+    return _.each(array, function(e, i, a) {
+    return _.filter(a[i]["friends"], function(e, i, a) {
+          if(a[i]["name"][0].toLowerCase() === letter.toLowerCase()) {
+            return customer.name[0];
+        }
     }).length;
+    })
 };
 
 var friendsCount = function(array, name) {
-   return _.each(customers, function(customer) {
-          _.each(customer, function(friends) {
-             _.filter(friends, function(friend) {
-              if (customer.friend.name === name) {
-                  return customer.name;
-              }
-           })
+   let friendsOfFriends = [];
+   _.each(array, function(e, i, a) {
+       _.each(a[i]["friends"], function(element, index, arr) {
+           if(arr[index]["name"] === name) {
+              friendsOfFriends.push(array[i]["name"]);
+           }
        })
    })
-};
+   return friendsOfFriends;
+}
+
+
+
 
 var topThreeTags = function(array) {
-    return _.each(customers, function(customer) {
-      _.reduce(customer.tags, function(total, tag) {
-          if(total[tag]) {
-              total[tag] += 1;
-          } else {
-              total[tag] = 1;
-          }
-          return total;
-      }, {})  
-    })
+  let tagArray  = _.pluck(array, "tags");
+  let tagCount = _.reduce(tagArray, function(tagObj, tag) {
+      if (tagObj[tag]) {
+          tagObj[tag] += 1;
+      } else {
+          tagObj[tag] = 1;
+      }
+      return tagObj;
+  }, {});
+
+let countsArray = [];
+    for (let key in tagCount) {
+        countsArray.push([key, tagCount[key]]);
+        
+    }
+    countsArray.sort(function(a, b) {
+        return b[1] - a[1];
+    });
+    
+    let topThreeArray = countsArray.slice(0, 3);
+    let topThreeWords = _.map(topThreeArray, function(array) {
+        return array[0];
+    });
+    return topThreeWords;
 };
 // access array: loop through customers with each
 // reduce the tag
-var genderCount;
-
+var genderCount = function(array) {
+    return _.reduce(customers, function(total, customer) {
+        if (total[customer.gender]) {
+            total[customer.gender] += 1;
+        } else {
+            total[customer.gender] = 1;
+        }
+        return total;
+    }, {})
+};
+// use reduce to summarize the gender's of customers
+// object will be output
 //////////////////////////////////////////////////////////////////////
 // DON'T REMOVE THIS CODE ////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
