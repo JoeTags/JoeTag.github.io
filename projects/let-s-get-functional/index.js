@@ -89,13 +89,18 @@ var firstLetterCount = function(array, letter) {
 };
 
 var friendFirstLetterCount = function(array, customer, letter) {
-    return _.each(array, function(e, i, a) {
-    return _.filter(a[i]["friends"], function(e, i, a) {
-          if(a[i]["name"][0].toLowerCase() === letter.toLowerCase()) {
-            return customer.name[0];
+    let counter = 0;
+     _.each(array, function(e, i, a) {
+         if(customer === e.name) {
+     _.filter(e.friends, function(element, index, arr) {
+          if(element.name[0].toLowerCase() === letter.toLowerCase()) {
+                    
+              counter++;
         }
-    }).length;
+        
     })
+    }})  
+    return counter;
 };
 
 var friendsCount = function(array, name) {
@@ -114,33 +119,42 @@ var friendsCount = function(array, name) {
 
 
 var topThreeTags = function(array) {
-  let tagArray  = _.pluck(array, "tags");
-  let tagCount = _.reduce(tagArray, function(tagObj, tag) {
-      if (tagObj[tag]) {
-          tagObj[tag] += 1;
-      } else {
-          tagObj[tag] = 1;
-      }
-      return tagObj;
-  }, {});
-
-let countsArray = [];
-    for (let key in tagCount) {
-        countsArray.push([key, tagCount[key]]);
-        
+    let tagArray = [];
+    for (let i = 0; i < array.length; i++) {
+        tagArray = tagArray.concat(array[i].tags);
     }
-    countsArray.sort(function(a, b) {
+    
+    let tagCount = _.reduce(tagArray, (tagObj, tag) => {
+        
+        if(tagObj[tag]){
+            tagObj[tag]++;
+        } else{
+            tagObj[tag] = 1;
+        }
+       
+        return tagObj;
+    }, {});
+    
+   let countsArray = []; 
+        for(let key in tagCount){
+       
+        countsArray.push([key, tagCount[key]]);
+    }
+   
+    countsArray.sort((a, b) => {
+     
         return b[1] - a[1];
     });
-    
+   
     let topThreeArray = countsArray.slice(0, 3);
-    let topThreeWords = _.map(topThreeArray, function(array) {
-        return array[0];
+ 
+    let topThreeWords = _.map(topThreeArray, (arr) => {
+        return arr[0];
     });
+   
     return topThreeWords;
 };
-// access array: loop through customers with each
-// reduce the tag
+
 var genderCount = function(array) {
     return _.reduce(customers, function(total, customer) {
         if (total[customer.gender]) {
