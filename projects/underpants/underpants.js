@@ -479,7 +479,8 @@ _.reduce = function(array, action, seed) {
        result = array[0];
        _.each(array, function(element,index, collection) {
            if (index > 0) {
-            result = action(result, element, index);}
+            result = action(result, element, index);
+           }
        });
    } else {
        result = seed;
